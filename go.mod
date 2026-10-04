@@ -1,4 +1,4 @@
-module github.com/minio/zipindex
+module github.com/lgcorzo/zipindex
 
 go 1.20
 

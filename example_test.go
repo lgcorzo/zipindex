@@ -24,7 +24,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/minio/zipindex"
+	"github.com/lgcorzo/zipindex"
 )
 
 func ExampleReadDir() {
