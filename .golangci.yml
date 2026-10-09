@@ -1,3 +1,11 @@
+linters-settings:
+  misspell:
+    locale: US
+  staticcheck:
+    checks:
+      - all
+      - -SA6002
+
 linters:
   disable-all: true
   enable:
@@ -6,34 +14,11 @@ linters:
     - misspell
     - staticcheck
     - unused
-  settings:
-    misspell:
-      locale: US
-    staticcheck:
-      checks:
-        - all
-        - -SA6002
-  exclusions:
-    generated: lax
-    rules:
-      - path: (.+)\.go$
-        text: should have a package comment
-      - path: (.+)\.go$
-        text: comment on exported method
-      - path: (.+)\.go$
-        text: should have comment or be unexported
-      - path: (.+)\.go$
-        text: error strings should not be capitalized or end with punctuation or a newline
-    paths:
-      - third_party$
-      - builtin$
-      - examples$
-formatters:
-  enable:
-    - goimports
-  exclusions:
-    generated: lax
-    paths:
-      - third_party$
-      - builtin$
-      - examples$
+
+issues:
+  exclude-use-default: false
+  exclude:
+    - should have a package comment
+    - comment on exported method
+    - should have comment or be unexported
+    - error strings should not be capitalized or end with punctuation or a newline
