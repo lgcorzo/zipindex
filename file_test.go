@@ -69,3 +69,48 @@ func BenchmarkFindSerialized(b *testing.B) {
 		})
 	}
 }
+
+func TestRemoveInsecurePaths(t *testing.T) {
+	files := Files{
+		{Name: "valid/path.txt"},
+		{Name: "../etc/passwd"},
+		{Name: `C:\windows\system32`},
+		{Name: ""}, // Zip permits empty file name field
+		{Name: "another/valid/file.go"},
+		{Name: "/absolute/path"},
+	}
+
+	files.RemoveInsecurePaths()
+
+	expected := []string{
+		"valid/path.txt",
+		"",
+		"another/valid/file.go",
+	}
+
+	if len(files) != len(expected) {
+		t.Fatalf("expected %d files, got %d", len(expected), len(files))
+	}
+
+	for i, exp := range expected {
+		if files[i].Name != exp {
+			t.Errorf("file %d: expected name %q, got %q", i, exp, files[i].Name)
+		}
+	}
+}
+
+func TestReadDirInvalidZipSize(t *testing.T) {
+	buf := []byte("fake zip buffer")
+
+	// Negative zipSize should return an error
+	_, err := ReadDir(buf, -1, nil)
+	if err == nil {
+		t.Error("expected error for negative zipSize, got nil")
+	}
+
+	// zipSize smaller than len(buf) should return an error
+	_, err = ReadDir(buf, 5, nil)
+	if err == nil {
+		t.Error("expected error when len(buf) > zipSize, got nil")
+	}
+}

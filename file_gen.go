@@ -3,6 +3,9 @@
 package zipindex
 
 import (
+	"errors"
+	"strconv"
+
 	"github.com/tinylib/msgp/msgp"
 )
 
@@ -365,6 +368,10 @@ func (z *files) DecodeMsg(dc *msgp.Reader) (err error) {
 		err = msgp.WrapError(err)
 		return
 	}
+	if zb0002 > MaxFiles {
+		err = msgp.WrapError(ErrTooManyFiles, strconv.FormatUint(uint64(zb0002), 10))
+		return
+	}
 	if cap((*z)) >= int(zb0002) {
 		(*z) = (*z)[:zb0002]
 	} else {
@@ -419,6 +426,10 @@ func (z *files) UnmarshalMsg(bts []byte) (o []byte, err error) {
 		err = msgp.WrapError(err)
 		return
 	}
+	if zb0002 > MaxFiles {
+		err = msgp.WrapError(ErrTooManyFiles, zb0002)
+		return
+	}
 	if cap((*z)) >= int(zb0002) {
 		(*z) = (*z)[:zb0002]
 	} else {
@@ -462,6 +473,10 @@ func (z *filesAsStructs) DecodeMsg(dc *msgp.Reader) (err error) {
 		err = msgp.WrapError(err, "Names")
 		return
 	}
+	if zb0002 > MaxFiles {
+		err = msgp.WrapError(ErrTooManyFiles, "Names", strconv.FormatUint(uint64(zb0002), 10))
+		return
+	}
 	if cap(z.Names) >= int(zb0002) {
 		z.Names = (z.Names)[:zb0002]
 	} else {
@@ -478,6 +493,10 @@ func (z *filesAsStructs) DecodeMsg(dc *msgp.Reader) (err error) {
 	zb0003, err = dc.ReadArrayHeader()
 	if err != nil {
 		err = msgp.WrapError(err, "CSizes")
+		return
+	}
+	if zb0003 != zb0002 {
+		err = msgp.WrapError(errors.New("field number mismatch"), "CSizes", strconv.FormatUint(uint64(zb0003), 10))
 		return
 	}
 	if cap(z.CSizes) >= int(zb0003) {
@@ -498,6 +517,10 @@ func (z *filesAsStructs) DecodeMsg(dc *msgp.Reader) (err error) {
 		err = msgp.WrapError(err, "USizes")
 		return
 	}
+	if zb0004 != zb0002 {
+		err = msgp.WrapError(errors.New("field number mismatch"), "USizes", strconv.FormatUint(uint64(zb0004), 10))
+		return
+	}
 	if cap(z.USizes) >= int(zb0004) {
 		z.USizes = (z.USizes)[:zb0004]
 	} else {
@@ -514,6 +537,10 @@ func (z *filesAsStructs) DecodeMsg(dc *msgp.Reader) (err error) {
 	zb0005, err = dc.ReadArrayHeader()
 	if err != nil {
 		err = msgp.WrapError(err, "Offsets")
+		return
+	}
+	if zb0005 != zb0002 {
+		err = msgp.WrapError(errors.New("field number mismatch"), "Offsets", strconv.FormatUint(uint64(zb0005), 10))
 		return
 	}
 	if cap(z.Offsets) >= int(zb0005) {
@@ -534,6 +561,10 @@ func (z *filesAsStructs) DecodeMsg(dc *msgp.Reader) (err error) {
 		err = msgp.WrapError(err, "Methods")
 		return
 	}
+	if zb0006 != zb0002 {
+		err = msgp.WrapError(errors.New("field number mismatch"), "Methods", strconv.FormatUint(uint64(zb0006), 10))
+		return
+	}
 	if cap(z.Methods) >= int(zb0006) {
 		z.Methods = (z.Methods)[:zb0006]
 	} else {
@@ -550,6 +581,10 @@ func (z *filesAsStructs) DecodeMsg(dc *msgp.Reader) (err error) {
 	zb0007, err = dc.ReadArrayHeader()
 	if err != nil {
 		err = msgp.WrapError(err, "Flags")
+		return
+	}
+	if zb0007 != zb0002 {
+		err = msgp.WrapError(errors.New("field number mismatch"), "Flags", strconv.FormatUint(uint64(zb0007), 10))
 		return
 	}
 	if cap(z.Flags) >= int(zb0007) {
@@ -573,6 +608,10 @@ func (z *filesAsStructs) DecodeMsg(dc *msgp.Reader) (err error) {
 	zb0008, err = dc.ReadArrayHeader()
 	if err != nil {
 		err = msgp.WrapError(err, "Custom")
+		return
+	}
+	if zb0008 != zb0002 {
+		err = msgp.WrapError(errors.New("field number mismatch"), "Custom", strconv.FormatUint(uint64(zb0008), 10))
 		return
 	}
 	if cap(z.Custom) >= int(zb0008) {

@@ -219,16 +219,17 @@ func (f Files) encodeAoS(res []byte) ([]byte, error) {
 // RemoveInsecurePaths will remove any file with path deemed insecure.
 // This is files that fail either !filepath.IsLocal(file.Name) or contain a backslash.
 func (f *Files) RemoveInsecurePaths() {
-	files := *f
-	for i, file := range files {
+	files := (*f)[:0]
+	for _, file := range *f {
 		if file.Name == "" {
 			// Zip permits an empty file name field.
+			files = append(files, file)
 			continue
 		}
 		// The zip specification states that names must use forward slashes,
 		// so consider any backslashes in the name insecure.
-		if !filepath.IsLocal(file.Name) || strings.Contains(file.Name, `\`) {
-			files = append(files[:i], files[:i+1]...)
+		if filepath.IsLocal(file.Name) && !strings.Contains(file.Name, `\`) {
+			files = append(files, file)
 		}
 	}
 	*f = files
@@ -579,8 +580,11 @@ func FindSerialized(b []byte, name string) (*File, error) {
 				err = msgp.WrapError(err, "Crcs")
 				return nil, err
 			}
-			if len(Crcs) != int(nFiles*4) {
-				return nil, fmt.Errorf("CRC field too short, want %d, got %d", int(nFiles*4), len(Crcs))
+			if uint64(len(Crcs)) != uint64(nFiles)*4 {
+				return nil, fmt.Errorf("CRC field too short, want %d, got %d", uint64(nFiles)*4, len(Crcs))
+			}
+			if uint64((idx+1)*4) > uint64(len(Crcs)) {
+				return nil, fmt.Errorf("CRC field index out of bounds")
 			}
 			cur.CRC32 = binary.LittleEndian.Uint32(Crcs[idx*4:])
 			continue
