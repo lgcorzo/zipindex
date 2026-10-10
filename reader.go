@@ -79,7 +79,7 @@ func DefaultFileFilter(dst *File, entry *ZipDirEntry) *File {
 // The total size of the zip file must be provided.
 // A custom filter can be provided. If nil DefaultFileFilter will be used.
 func ReadDir(buf []byte, zipSize int64, filter FileFilter) (Files, error) {
-	if len(buf) > int(zipSize) {
+	if zipSize < 0 || int64(len(buf)) > zipSize {
 		return nil, errors.New("more bytes than total size provided")
 	}
 	end, err := readDirectoryEnd(buf, zipSize)
