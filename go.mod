@@ -1,9 +1,9 @@
 module github.com/minio/zipindex
 
-go 1.24
+go 1.25
 
 require (
-	github.com/klauspost/compress v1.18.7
+	github.com/klauspost/compress v1.20.2
 	github.com/tinylib/msgp v1.4.0
 )
 
